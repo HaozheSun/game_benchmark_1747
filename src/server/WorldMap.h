@@ -15,6 +15,7 @@ public:
     int n_players;
     
     Region** regions;
+    Region** allregions;
     Vector2D n_regs;
     
     /* map and region */
