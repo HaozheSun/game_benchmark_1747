@@ -285,14 +285,14 @@ void WorldMap::balance_spread()
 	int totalPlayers = 0;
 	
 	for (int i=0; i<(n_regs.x * n_regs.y); i++){
-		Region* region = *allreagions[i];
+		Region* region = *allregions[i];
 		totalPlayers += region->n_pls;
 	}
 	printf("Total Players: %d\n", totalPlayers);
 	int target = totalPlayers / sd->num_threads;
 	printf("Target Players in a thread: %d\n", target);
 	for (int i = 0; i < n_regs.x * n_regs.y; i++){
-		Region* region = *allreagions[i];
+		Region* region = *allregions[i];
 		int lightest=0;
 		for (int j=1; j<sd->num_threads; j++){
 			if (newLoad[j]<newLoad[lightest]){
