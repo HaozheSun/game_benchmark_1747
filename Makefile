@@ -8,7 +8,8 @@
 
 CC = gcc
 CXX = g++
-CXXFLAGS := `sdl-config --cflags` -I./src -Wall -g
+
+CXXFLAGS := -I/homes/s/sunhaoz2/Desktop/sdl/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -I./src -Wall -g
 ## Other CXXFLAGS: (also defined in src/Settings.h)
 ## -D__DISABLE_RATE_MONITOR__	<== don't monitor trasnfer: faster transfer but no statistics
 ## -D__COMPRESSED_MESSAGES__	<== update messages from server to clients are compressed with zlib
@@ -17,7 +18,8 @@ CXXFLAGS := `sdl-config --cflags` -I./src -Wall -g
 ## -D__SERVER_PLAYER_RATIO__	<== each player has a coefficient depending on its speed (works well
 ##				only if the server has one regular update thread)
 ## -D__USE_3DS_GRAPHICS__	<== use 3ds models instead of vrml for client GUI
-LDFLAGS := `sdl-config --libs` -lSDL_net -lm
+
+LDFLAGS := -L/homes/s/sunhaoz2/Desktop/sdl/lib -Wl,-rpath,/homes/s/sunhaoz2/Desktop/lib -lSDL -lpthread -lSDL_net -lm
 ## -lz is also needed when compiling with -D__COMPRESSED_MESSAGES__
 LDFLAGS_CLIENT = $(LDFLAGS) -lGL -lGLU
 LDFLAGS_SERVER = $(LDFLAGS)
@@ -103,19 +105,19 @@ server_only: $(SERVER_OBJS)
 master_only: $(MASTER_OBJS)
 
 client: $(BUILD_DIR) $(CLIENT_OBJS)
-	$(CXX) $(LDFLAGS_CLIENT) -o $(CLIENT_BINARY_NAME) $(CLIENT_OBJS)
+	$(CXX)  -o $(CLIENT_BINARY_NAME) $(CLIENT_OBJS) $(LDFLAGS_CLIENT)
 server: $(BUILD_DIR) $(SERVER_OBJS)
-	$(CXX) $(LDFLAGS_SERVER) -o $(SERVER_BINARY_NAME) $(SERVER_OBJS)
+	$(CXX)  -o $(SERVER_BINARY_NAME) $(SERVER_OBJS) $(LDFLAGS_SERVER)
 master: $(BUILD_DIR) $(MASTER_OBJS)
-	$(CXX) $(LDFLAGS_MASTER) -o $(MASTER_BINARY_NAME) $(MASTER_OBJS)
+	$(CXX)  -o $(MASTER_BINARY_NAME) $(MASTER_OBJS) $(LDFLAGS_MASTER)
 
 ## Target for generic cpp files
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp
-	$(CXX) -c $(CXXFLAGS) -o $@ $<
+	$(CXX) -c $(CXXFLAGS) -o $@ $< 
 
 ## Target for generic c files
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.c
-	$(CC) -c $(CXXFLAGS) -o $@ $<
+	$(CC) -c $(CXXFLAGS) -o $@ $< 
 
 
 ## Call another makefile to build the game monitor

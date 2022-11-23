@@ -33,10 +33,13 @@ void WorldMap::generate()
 	{
 		regions[i] = new Region[ n_regs.y ];
 		for( j = 0, pos.y = 0; j < n_regs.y; j++, pos.y += regmin.y )
+		{
 			initRegion( &regions[i][j], pos, regmin, (i*n_regs.y + j)/regions_per_thread, objs, pls);
 
 
 			allregions[i*n_regs.y+j]=&regions[i][j];
+		}
+			
 	}
 
 	/* generate objects */
@@ -271,7 +274,10 @@ void WorldMap::reassignRegion( Region* r, int new_layout )
 	r->layout = new_layout;
 }
 
-
+bool WorldMap::isOverloaded( int n_pl )
+{
+	return false;
+}
 void WorldMap::balance_lightest()
 {
 }
@@ -316,13 +322,21 @@ void WorldMap::balance()
 	last_balance = now;
 	
 	if( !strcmp( sd->algorithm_name, "static" ) )		return;
-	
+	bool overloaded=false;
 	n_players = 0;
-	for( int i = 0; i < sd->num_threads; i++ )			n_players += players[i].size();
+	for( int i = 0; i < sd->num_threads; i++ )
+	{
+		int n_pl = players[i].size();
+		bool overload = isOverloaded(n_pl);
+		if (overload) overloaded = true;
+		n_players += players[i].size();
+	}			
 	if( n_players == 0 )								return;
-	
+	if (!overloaded)									return;
 	if( !strcmp( sd->algorithm_name, "lightest" ) )		return balance_lightest();
 	if( !strcmp( sd->algorithm_name, "spread" ) )		return balance_spread();
+	
+	
 	
 	printf("Algorithm %s is not implemented.\n", sd->algorithm_name);
 	return;
