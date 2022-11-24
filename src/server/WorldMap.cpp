@@ -274,28 +274,29 @@ void WorldMap::reassignRegion( Region* r, int new_layout )
 	r->layout = new_layout;
 }
 
-bool WorldMap::isOverloaded( int n_pl )
+bool WorldMap::isOverloaded( int n_pl , int totalplayer)
 {
+	if (n_pl > sd->overloaded_level * totalplayer / sd->num_threads) return true;
 	return false;
 }
 void WorldMap::balance_lightest()
 {
 }
 
-void WorldMap::balance_spread()
+void WorldMap::balance_spread(int n_players)
 {
 	printf("Start Spread Balancing\n");
 	// int newArrange[n_regs.x * n_regs.y];
 	int newLoad[sd->num_threads];
 	memset(newLoad, 0, sizeof(newLoad));
-	int totalPlayers = 0;
+	// int totalPlayers = 0;
 	
-	for (int i=0; i<(n_regs.x * n_regs.y); i++){
-		Region* region = allregions[i];
-		totalPlayers += region->n_pls;
-	}
-	printf("Total Players: %d\n", totalPlayers);
-	int target = totalPlayers / sd->num_threads;
+	// for (int i=0; i<(n_regs.x * n_regs.y); i++){
+	// 	Region* region = allregions[i];
+	// 	totalPlayers += region->n_pls;
+	// }
+	printf("Total Players: %d\n", n_players);
+	int target = n_players / sd->num_threads;
 	printf("Target Players in a thread: %d\n", target);
 	for (int i = 0; i < n_regs.x * n_regs.y; i++){
 		Region* region = allregions[i];
@@ -326,15 +327,17 @@ void WorldMap::balance()
 	n_players = 0;
 	for( int i = 0; i < sd->num_threads; i++ )
 	{
-		int n_pl = players[i].size();
-		bool overload = isOverloaded(n_pl);
-		if (overload) overloaded = true;
 		n_players += players[i].size();
-	}			
+	}		
 	if( n_players == 0 )								return;
+	for( int i = 0; i < sd->num_threads; i++ )
+	{
+		bool overload = isOverloaded(players[i].size(),n_players);
+		if (overload) overloaded = true;
+	}	
 	if (!overloaded)									return;
 	if( !strcmp( sd->algorithm_name, "lightest" ) )		return balance_lightest();
-	if( !strcmp( sd->algorithm_name, "spread" ) )		return balance_spread();
+	if( !strcmp( sd->algorithm_name, "spread" ) )		return balance_spread(n_players);
 	
 	
 	
