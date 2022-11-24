@@ -47,9 +47,9 @@ public:
     
     void balance();
     void balance_lightest();
-    void balance_spread();
+    void balance_spread(int n_players);
 
-    bool isOverloaded( int n_pl );
+    bool isOverloaded( int n_pl, int totalplayer );
     void reassignRegion( Region* r, int new_layout );
     
     void regenerateObjects();

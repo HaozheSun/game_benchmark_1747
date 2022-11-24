@@ -310,8 +310,8 @@ void WorldMap::balance_spread(int n_players)
 		newLoad[lightest]+=region->n_pls;
 		reassignRegion(region,lightest);
 	}
-	for (int j=1; j<sd->num_threads; j++){
-			printf("Players in thread %d after spread: %d\n", j, target);
+	for (int j=0; j<sd->num_threads; j++){
+			printf("Players in thread %d after spread: %d\n", j, players[j].size());
 		}
 	printf("Spread Balancing Complete!\n\n");
 }
@@ -327,6 +327,7 @@ void WorldMap::balance()
 	n_players = 0;
 	for( int i = 0; i < sd->num_threads; i++ )
 	{
+		printf("Players in thread %d : %d\n", i, players[i].size());
 		n_players += players[i].size();
 	}		
 	if( n_players == 0 )								return;
