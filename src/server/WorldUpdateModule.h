@@ -23,7 +23,8 @@
 #include "../utils/SDL_barrier.h"
 #include "../comm/MessageQueue.h"
 #include "../comm/MessageModule.h"
-
+#include <iostream>
+#include <fstream>
 
 
 class WorldUpdateModule : public Module
@@ -34,6 +35,7 @@ protected:
 	SDL_barrier *barrier;
 	
 	MessageModule* comm;
+        fstream MyLog;
 	
 public:
 	double avg_wui;			// average_world_update_interval
