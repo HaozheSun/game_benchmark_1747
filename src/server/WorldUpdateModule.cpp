@@ -56,7 +56,7 @@ void WorldUpdateModule::run()
     printf("%s\n",b.c_str());
     
     MyLog.open (b, std::fstream::in | std::fstream::out | std::fstream::app);
-    MyLog << "Iteration,GetTicks,thread_id,#Request,Processing Time,Total #Request,Total Request Processing Time,#Update,Update Time,Total #Update,Total Update Time,"<<std::endl;
+    MyLog << "Iteration,GetTicks,thread_id,#Request,Processing Time,Total #Request,Total Request Processing Time,#Update,Update Time,Total #Update,Total Update Time,Player Number,"<<std::endl;
     Uint32 start_time;
     Uint32 timeout;
     Uint32 wui, rui;
@@ -94,6 +94,7 @@ void WorldUpdateModule::run()
                 int iter_request_count =0;
                 Uint32 iter_request_time=0;
                 int iter_update_number=0;
+                int iter_player_number=0;
     
                 Uint32 iter_update_time=0;
 		
@@ -138,7 +139,7 @@ void WorldUpdateModule::run()
         
         
         SDL_WaitBarrier(barrier);
-        
+        iter_player_number=sd->wm.players[t_id].size();
         if( t_id == 0 )
         {
         	sd->wm.balance();
@@ -209,7 +210,7 @@ void WorldUpdateModule::run()
             MyLog <<iter_count<<","<<SDL_GetTicks()<<","<<t_id<<","<<iter_request_count<<","
                     <<iter_request_time<<","<< request_number<<","<<request_time<<
                     ","<<iter_update_number<<","<<iter_update_time<<","<<update_number<<","
-                    <<update_time<<std::endl;
+                    <<update_time<<","<<iter_player_number<<","<<std::endl;
             
       
             //printf("Request time: %"PRIu32"\n",request_time);
