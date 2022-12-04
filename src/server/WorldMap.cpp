@@ -319,9 +319,10 @@ void WorldMap::balance_spread(int n_players)
 void WorldMap::balance()
 {
 	Uint32 now = SDL_GetTicks();
+	n_players = 0;
 	for( int i = 0; i < sd->num_threads; i++ )
 	{
-		printf("Players in thread %d : %d\n", i, players[i].size());
+		//printf("Players in thread %d : %d\n", i, players[i].size());
 		n_players += players[i].size();
 	}	
 	if ( now - last_balance < sd->load_balance_limit )	return;
@@ -329,7 +330,7 @@ void WorldMap::balance()
 	
 	if( !strcmp( sd->algorithm_name, "static" ) )		return;
 	bool overloaded=false;
-	n_players = 0;
+	
 		
 	if( n_players == 0 )								return;
 	for( int i = 0; i < sd->num_threads; i++ )
